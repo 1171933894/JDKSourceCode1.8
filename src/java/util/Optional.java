@@ -104,6 +104,10 @@ public final class Optional<T> {
      * @return an {@code Optional} with the value present
      * @throws NullPointerException if value is null
      */
+    /**
+     * 为非null的值创建一个Optional<br/>
+     * of方法通过工厂方法创建Optional类。需要注意的是，创建对象时传入的参数不能为null。如果传入参数为null，则抛出NullPointerException
+     */
     public static <T> Optional<T> of(T value) {
         return new Optional<>(value);
     }
@@ -116,6 +120,10 @@ public final class Optional<T> {
      * @param value the possibly-null value to describe
      * @return an {@code Optional} with a present value if the specified value
      * is non-null, otherwise an empty {@code Optional}
+     */
+    /**
+     * 为指定的值创建一个Optional，如果指定的值为null，则返回一个空的Optional。
+     * ofNullable与of方法相似，唯一的区别是可以接受参数为null的情况
      */
     public static <T> Optional<T> ofNullable(T value) {
         return value == null ? empty() : of(value);
@@ -130,6 +138,9 @@ public final class Optional<T> {
      *
      * @see Optional#isPresent()
      */
+    /**
+     * 如果Optional有值则将其返回，否则抛出NoSuchElementException
+     */
     public T get() {
         if (value == null) {
             throw new NoSuchElementException("No value present");
@@ -142,6 +153,9 @@ public final class Optional<T> {
      *
      * @return {@code true} if there is a value present, otherwise {@code false}
      */
+    /**
+     * 如果值存在返回true，否则返回false
+     */
     public boolean isPresent() {
         return value != null;
     }
@@ -153,6 +167,9 @@ public final class Optional<T> {
      * @param consumer block to be executed if a value is present
      * @throws NullPointerException if value is present and {@code consumer} is
      * null
+     */
+    /**
+     * 如果Optional实例有值则为其调用consumer
      */
     public void ifPresent(Consumer<? super T> consumer) {
         if (value != null)
@@ -170,6 +187,7 @@ public final class Optional<T> {
      * otherwise an empty {@code Optional}
      * @throws NullPointerException if the predicate is null
      */
+    // 如果有值并且满足断言条件返回包含该值的Optional，否则返回空Optional。
     public Optional<T> filter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
         if (!isPresent())
@@ -207,6 +225,8 @@ public final class Optional<T> {
      * otherwise an empty {@code Optional}
      * @throws NullPointerException if the mapping function is null
      */
+    // 如果有值，则对其执行调用mapping函数得到返回值。如果返回值不为null，
+    // 则创建包含mapping返回值的Optional作为map方法返回值，否则返回空Optional
     public<U> Optional<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         if (!isPresent())
@@ -233,6 +253,8 @@ public final class Optional<T> {
      * @throws NullPointerException if the mapping function is null or returns
      * a null result
      */
+    // 如果有值，为其执行mapping函数返回Optional类型返回值，否则返回空Optional。flatMap与map（Funtion）方法类似，
+    // 区别在于flatMap中的mapper返回值必须是Optional。调用结束时，flatMap不会对结果用Optional封装
     public<U> Optional<U> flatMap(Function<? super T, Optional<U>> mapper) {
         Objects.requireNonNull(mapper);
         if (!isPresent())
@@ -249,6 +271,7 @@ public final class Optional<T> {
      * be null
      * @return the value, if present, otherwise {@code other}
      */
+    // 如果Optional实例有值则将其返回，否则返回orElse方法传入的参数
     public T orElse(T other) {
         return value != null ? value : other;
     }
@@ -263,6 +286,7 @@ public final class Optional<T> {
      * @throws NullPointerException if value is not present and {@code other} is
      * null
      */
+    // orElseGet与orElse方法类似，区别在于得到的默认值。orElse方法将传入的字符串作为默认值，orElseGet方法可以接受Supplier接口的实现用来生成默认值。
     public T orElseGet(Supplier<? extends T> other) {
         return value != null ? value : other.get();
     }
@@ -283,6 +307,7 @@ public final class Optional<T> {
      * @throws NullPointerException if no value is present and
      * {@code exceptionSupplier} is null
      */
+    // 如果有值则将其返回，否则抛出supplier接口创建的异常
     public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
         if (value != null) {
             return value;
