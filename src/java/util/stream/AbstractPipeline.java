@@ -158,9 +158,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      */
     AbstractPipeline(Supplier<? extends Spliterator<?>> source,
                      int sourceFlags, boolean parallel) {
-        this.previousStage = null;
-        this.sourceSupplier = source;
-        this.sourceStage = this;
+        this.previousStage = null;// 上游管道，第一次创建流则为null
+        this.sourceSupplier = source;// 源分裂器。仅对头管道有效
+        this.sourceStage = this;// 反向链接到管道链的头部（如果这是源阶段，则为它本身）
         this.sourceOrOpFlags = sourceFlags & StreamOpFlag.STREAM_MASK;
         // The following is an optimization of:
         // StreamOpFlag.combineOpFlags(sourceOrOpFlags, StreamOpFlag.INITIAL_OPS_VALUE);

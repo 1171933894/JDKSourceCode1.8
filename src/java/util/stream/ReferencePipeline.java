@@ -547,6 +547,7 @@ abstract class ReferencePipeline<P_IN, P_OUT>
          */
         Head(Supplier<? extends Spliterator<?>> source,
              int sourceFlags, boolean parallel) {
+            // source - 描述流的源 sourceFlags - 流的来原标志 parallel - 是否为并行流
             super(source, sourceFlags, parallel);
         }
 
