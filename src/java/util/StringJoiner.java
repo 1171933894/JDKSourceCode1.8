@@ -63,9 +63,9 @@ package java.util;
  * @since  1.8
 */
 public final class StringJoiner {
-    private final String prefix;
-    private final String delimiter;
-    private final String suffix;
+    private final String prefix;// 前缀
+    private final String delimiter;// 间隔符
+    private final String suffix;// 后缀
 
     /*
      * StringBuilder value -- at any time, the characters constructed from the
@@ -81,7 +81,7 @@ public final class StringJoiner {
      * i.e. when it is empty.  This may be overridden by the user to be some
      * other value including the empty String.
      */
-    private String emptyValue;
+    private String emptyValue;// 空值
 
     /**
      * Constructs a {@code StringJoiner} with no characters in it, with no
@@ -96,6 +96,7 @@ public final class StringJoiner {
      *         element added to the {@code StringJoiner} value
      * @throws NullPointerException if {@code delimiter} is {@code null}
      */
+    // 默认前缀和后缀为""，重载调用
     public StringJoiner(CharSequence delimiter) {
         this(delimiter, "", "");
     }
@@ -118,13 +119,16 @@ public final class StringJoiner {
     public StringJoiner(CharSequence delimiter,
                         CharSequence prefix,
                         CharSequence suffix) {
+        // 前缀、间隔符、后缀判断是否为null，null将抛出异常
         Objects.requireNonNull(prefix, "The prefix must not be null");
         Objects.requireNonNull(delimiter, "The delimiter must not be null");
         Objects.requireNonNull(suffix, "The suffix must not be null");
         // make defensive copies of arguments
+        // 成员变量赋值
         this.prefix = prefix.toString();
         this.delimiter = delimiter.toString();
         this.suffix = suffix.toString();
+        // 空置被设置为只有前缀和后缀
         this.emptyValue = this.prefix + this.suffix;
     }
 
@@ -142,6 +146,7 @@ public final class StringJoiner {
      * @throws NullPointerException when the {@code emptyValue} parameter is
      *         {@code null}
      */
+    // 设置空值，检查是否为null
     public StringJoiner setEmptyValue(CharSequence emptyValue) {
         this.emptyValue = Objects.requireNonNull(emptyValue,
             "The empty value must not be null").toString();
