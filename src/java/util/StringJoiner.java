@@ -164,11 +164,12 @@ public final class StringJoiner {
     @Override
     public String toString() {
         if (value == null) {
-            return emptyValue;
+            return emptyValue;// 没有值将返回空值或者后续设置的空值
         } else {
             if (suffix.equals("")) {
-                return value.toString();
+                return value.toString();// 后缀为“”直接返回字符串，不用添加
             } else {
+                // 后缀为“”，添加后缀，然后直接返回字符串，修改长度
                 int initialLength = value.length();
                 String result = value.append(suffix).toString();
                 // reset value to pre-append initialLength
@@ -186,6 +187,7 @@ public final class StringJoiner {
      * @param  newElement The element to add
      * @return a reference to this {@code StringJoiner}
      */
+    // 初始化，先添加前缀，有了之后每次先添加间隔符，StringBuilder后续append字符串
     public StringJoiner add(CharSequence newElement) {
         prepareBuilder().append(newElement);
         return this;
@@ -210,6 +212,7 @@ public final class StringJoiner {
      * @throws NullPointerException if the other {@code StringJoiner} is null
      * @return This {@code StringJoiner}
      */
+    // 合并StringJoiner，注意后面StringJoiner的前缀就不要了，后面的append进来
     public StringJoiner merge(StringJoiner other) {
         Objects.requireNonNull(other);
         if (other.value != null) {
@@ -223,6 +226,7 @@ public final class StringJoiner {
         return this;
     }
 
+    // 初始化，先添加前缀，有了之后每次先添加间隔符
     private StringBuilder prepareBuilder() {
         if (value != null) {
             value.append(delimiter);
@@ -246,6 +250,7 @@ public final class StringJoiner {
         // Remember that we never actually append the suffix unless we return
         // the full (present) value or some sub-string or length of it, so that
         // we can add on more if we need to.
+        // 不忘添加后缀的长度
         return (value != null ? value.length() + suffix.length() :
                 emptyValue.length());
     }
