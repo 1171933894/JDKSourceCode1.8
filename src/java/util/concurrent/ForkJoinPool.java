@@ -774,6 +774,7 @@ public class ForkJoinPool extends AbstractExecutorService {
      * arrays sharing cache lines. The @Contended annotation alerts
      * JVMs to try to keep instances apart.
      */
+    // WorkQueue是一个双端队列，它定义在ForkJoinPool类里。
     @sun.misc.Contended
     static final class WorkQueue {
 
@@ -802,8 +803,11 @@ public class ForkJoinPool extends AbstractExecutorService {
         int stackPred;             // pool stack (ctl) predecessor
         int nsteals;               // number of steals
         int hint;                  // randomization and stealer index hint
+        // WorkQueue也有config，不要和ForkJoinPool的config混淆了。WorkQueue的config记录了在WorkQueue[]的下标和当前mode
         int config;                // pool index and mode
+        // 1：锁定；0：未锁定；负数：对应的worker已经撤销注册，WorkQueue也就终止使用。
         volatile int qlock;        // 1: locked, < 0: terminate; else 0
+        // base和top分别指向WorkQueue的两端，小小区别是base带上了volatile
         volatile int base;         // index of next slot for poll
         int top;                   // index of next slot for push
         ForkJoinTask<?>[] array;   // the elements (initially unallocated)
@@ -2559,14 +2563,16 @@ public class ForkJoinPool extends AbstractExecutorService {
      * any security checks or parameter validation.  Invoked directly by
      * makeCommonPool.
      */
-    private ForkJoinPool(int parallelism,
+    private ForkJoinPool(int parallelism,// parallelism默认是cpu核心数，ForkJoinPool里线程数量依据于它，但不表示最大线程数，不要等同于ThreadPoolExecutor里的corePoolSize或者maximumPoolSize。
                          ForkJoinWorkerThreadFactory factory,
                          UncaughtExceptionHandler handler,
                          int mode,
                          String workerNamePrefix) {
         this.workerNamePrefix = workerNamePrefix;
+        // factory是线程工厂，不是新东西了，默认实现是DefaultForkJoinWorkerThreadFactory。workerNamePrefix是其中线程名称的前缀，默认使用“ForkJoinPool-*”
         this.factory = factory;
         this.ueh = handler;
+        // config保存不变的参数，包括了parallelism和mode，供后续读取。mode可选FIFO_QUEUE和LIFO_QUEUE，默认是LIFO_QUEUE，具体用哪种，就要看业务。
         this.config = (parallelism & SMASK) | mode;
         long np = (long)(-parallelism); // offset ctl counts
         this.ctl = ((np << AC_SHIFT) & AC_MASK) | ((np << TC_SHIFT) & TC_MASK);
@@ -3404,6 +3410,7 @@ public class ForkJoinPool extends AbstractExecutorService {
      * Creates and returns the common pool, respecting user settings
      * specified via system properties.
      */
+    // 创建并返回公共池，并遵守用户设置，通过系统属性指定。
     private static ForkJoinPool makeCommonPool() {
         int parallelism = -1;
         ForkJoinWorkerThreadFactory factory = null;

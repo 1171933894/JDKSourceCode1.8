@@ -209,6 +209,8 @@ import java.lang.reflect.Constructor;
  * @since 1.7
  * @author Doug Lea
  */
+// ForkJoinTask在触发执行后，并不支持其他什么特别操作，只能等待任务执行完成。
+// CountedCompleter是ForkJoinTask的子类，它在子任务协作方面扩展了更多操作。
 public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
 
     /*
@@ -248,6 +250,8 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
      */
 
     /** The run status of this task */
+    // 默认是0，当得出结果时变更为负数，NORMAL/CANCELLED/EXCEPTIONAL
+    // 在得出结果之前，任务状态能够被设置为SIGNAL
     volatile int status; // accessed directly by pool and workers
     static final int DONE_MASK   = 0xf0000000;  // mask out non-completion bits
     static final int NORMAL      = 0xf0000000;  // must be negative
