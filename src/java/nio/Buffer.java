@@ -182,9 +182,26 @@ public abstract class Buffer {
         Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.ORDERED;
 
     // Invariants: mark <= position <= limit <= capacity
+    /**
+     * position和limit的含义取决于Buffer处在读模式还是写模式。
+     * 不管Buffer处在什么模式，capacity的含义总是一样的
+     */
     private int mark = -1;
+    /**
+     * 当你写数据到Buffer中时，position表示当前的位置。初始的position值为0.当一个byte、long等数据写到Buffer后，
+     * position会向前移动到下一个可插入数据的Buffer单元。position最大可为capacity – 1.
+     *
+     * 当读取数据时，也是从某个特定位置读。当将Buffer从写模式切换到读模式，position会被重置为0.
+     * 当从Buffer的position处读取数据时，position向前移动到下一个可读的位置。
+     */
     private int position = 0;
+    /**
+     * 写模式下，limit等于Buffer的capacity
+     *
+     * 读模式时，limit会被设置成写模式下的position值
+     */
     private int limit;
+    // 内存块固定大小值mark
     private int capacity;
 
     // Used only by direct buffers
@@ -284,6 +301,7 @@ public abstract class Buffer {
      *
      * @return  This buffer
      */
+    // 标记Buffer中的一个特定position
     public final Buffer mark() {
         mark = position;
         return this;
@@ -300,6 +318,7 @@ public abstract class Buffer {
      * @throws  InvalidMarkException
      *          If the mark has not been set
      */
+    // 可以通过调用Buffer.reset()方法恢复到这个position
     public final Buffer reset() {
         int m = mark;
         if (m < 0)
@@ -324,6 +343,11 @@ public abstract class Buffer {
      * in which that might as well be the case. </p>
      *
      * @return  This buffer
+     */
+    /**
+     * position将被设回0，limit被设置成 capacity的值。
+     *
+     * 换句话说，Buffer 被清空了。Buffer中的数据并未清除。
      */
     public final Buffer clear() {
         position = 0;
@@ -353,9 +377,10 @@ public abstract class Buffer {
      *
      * @return  This buffer
      */
+    // 从写模式切换到读模式
     public final Buffer flip() {
-        limit = position;
-        position = 0;
+        limit = position;// 将limit设置成之前position的值
+        position = 0;// 将position设回0
         mark = -1;
         return this;
     }
@@ -375,6 +400,11 @@ public abstract class Buffer {
      *
      * @return  This buffer
      */
+    /**
+     * 将position设回0，所以你可以重读Buffer中的所有数据。
+     *
+     * limit保持不变，仍然表示能从Buffer中读取多少个元素。
+     */
     public final Buffer rewind() {
         position = 0;
         mark = -1;
@@ -387,6 +417,7 @@ public abstract class Buffer {
      *
      * @return  The number of elements remaining in this buffer
      */
+    // 剩余元素是从position到limit之间的元素
     public final int remaining() {
         return limit - position;
     }
