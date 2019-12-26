@@ -41,6 +41,7 @@ public abstract class Enum<E extends Enum<E>>
      * accessing this field.
      */
     // 枚举常量的名称
+            
     private final String name;
 
     /**
