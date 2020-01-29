@@ -2,25 +2,6 @@
  * Copyright (c) 2003, 2011, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 package java.lang;
@@ -59,6 +40,8 @@ public abstract class Enum<E extends Enum<E>>
      * Most programmers should use the {@link #toString} method rather than
      * accessing this field.
      */
+    // 枚举常量的名称
+            
     private final String name;
 
     /**
@@ -86,6 +69,11 @@ public abstract class Enum<E extends Enum<E>>
      * for use by sophisticated enum-based data structures, such as
      * {@link java.util.EnumSet} and {@link java.util.EnumMap}.
      */
+    /**
+     * 此枚举常量的序数（它在枚举声明中的位置，其中初始常量的序数为零）。
+     * 大多数程序员都不会使用这个领域。 它设计用于复杂的基于枚举的数据结构，
+     * 例如java.util.EnumSet和java.util.EnumMap。
+     */
     private final int ordinal;
 
     /**
@@ -98,6 +86,11 @@ public abstract class Enum<E extends Enum<E>>
      * as {@link java.util.EnumSet} and {@link java.util.EnumMap}.
      *
      * @return the ordinal of this enumeration constant
+     */
+    /**
+     * 返回此枚举常量的序数（它在枚举声明中的位置，其中初始常量的序数为零）。
+     * 大多数程序员都没有使用这种方法。
+     * 它设计用于复杂的基于枚举的数据结构，例如java.util.EnumSet和java.util.EnumMap
      */
     public final int ordinal() {
         return ordinal;
@@ -127,6 +120,10 @@ public abstract class Enum<E extends Enum<E>>
      *
      * @return the name of this enum constant
      */
+    /**
+     * 返回声明中包含的此枚举常量的名称。 可以覆盖该方法，但通常不需要或不需要。
+     * 当存在更“程序员友好”的字符串形式时，枚举类型应该重写此方法
+     */
     public String toString() {
         return name;
     }
@@ -139,6 +136,7 @@ public abstract class Enum<E extends Enum<E>>
      * @return  true if the specified object is equal to this
      *          enum constant.
      */
+    // 如果指定的对象等于此枚举常量，则返回true。
     public final boolean equals(Object other) {
         return this==other;
     }
@@ -158,6 +156,10 @@ public abstract class Enum<E extends Enum<E>>
      * status.
      *
      * @return (never returns)
+     */
+    /**
+     * 抛出CloneNotSupportedException。
+     * 这保证了枚举永远不会被克隆，这是保持其“单身”状态所必需的。
      */
     protected final Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
@@ -246,6 +248,7 @@ public abstract class Enum<E extends Enum<E>>
     /**
      * prevent default deserialization
      */
+    // 防止默认反序列化
     private void readObject(ObjectInputStream in) throws IOException,
         ClassNotFoundException {
         throw new InvalidObjectException("can't deserialize enum");

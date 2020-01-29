@@ -2,25 +2,6 @@
  * Copyright (c) 2005, 2013, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 package java.util;
@@ -186,20 +167,26 @@ public final class ServiceLoader<S>
     implements Iterable<S>
 {
 
+    // 需要加载的资源的路径的目录，固定是ClassPath下的META-INF/services/
     private static final String PREFIX = "META-INF/services/";
 
     // The class or interface representing the service being loaded
+    // ServiceLoader需要正在需要加载的类或者接口
     private final Class<S> service;
 
+    // ServiceLoader进行类加载的时候使用的类加载器引用
     // The class loader used to locate, load, and instantiate providers
     private final ClassLoader loader;
 
+    // 权限控制上下文
     // The access control context taken when the ServiceLoader is created
     private final AccessControlContext acc;
 
+    // 基于实例的顺序缓存类的实现实例，其中Key为实现类的全限定类名
     // Cached providers, in instantiation order
     private LinkedHashMap<String,S> providers = new LinkedHashMap<>();
 
+    // 当前的"懒查找"迭代器，这个是ServiceLoader的核心
     // The current lazy-lookup iterator
     private LazyIterator lookupIterator;
 
@@ -215,7 +202,8 @@ public final class ServiceLoader<S>
      * can be installed into a running Java virtual machine.
      */
     public void reload() {
-        providers.clear();
+        providers.clear();// 清空缓存
+        // 构造LazyIterator实例
         lookupIterator = new LazyIterator(service, loader);
     }
 
@@ -252,25 +240,32 @@ public final class ServiceLoader<S>
                           List<String> names)
         throws IOException, ServiceConfigurationError
     {
+        // 下一行没有内容，返回-1，便于上层可以跳出循环
         String ln = r.readLine();
         if (ln == null) {
             return -1;
         }
+        // 如果存在'#'字符，截取第一个'#'字符串之前的内容，'#'字符之后的属于注释内容
         int ci = ln.indexOf('#');
         if (ci >= 0) ln = ln.substring(0, ci);
         ln = ln.trim();
         int n = ln.length();
         if (n != 0) {
+            // 不能存在空格字符' '和特殊字符'\t'
             if ((ln.indexOf(' ') >= 0) || (ln.indexOf('\t') >= 0))
                 fail(service, u, lc, "Illegal configuration-file syntax");
             int cp = ln.codePointAt(0);
+            // 判断第一个char是否一个合法的Java起始标识符
             if (!Character.isJavaIdentifierStart(cp))
                 fail(service, u, lc, "Illegal provider-class name: " + ln);
+            // 判断所有其他字符串是否属于合法的Java标识符
             for (int i = Character.charCount(cp); i < n; i += Character.charCount(cp)) {
                 cp = ln.codePointAt(i);
                 if (!Character.isJavaIdentifierPart(cp) && (cp != '.'))
                     fail(service, u, lc, "Illegal provider-class name: " + ln);
             }
+            // 如果缓存中不存在加载出来的全类名或者已经加载的列表中不存在加载出来的全类
+            // 名则添加进去加载的全类名列表中
             if (!providers.containsKey(ln) && !names.contains(ln))
                 names.add(ln);
         }
@@ -299,6 +294,7 @@ public final class ServiceLoader<S>
     {
         InputStream in = null;
         BufferedReader r = null;
+        // 存放文件中所有的实现类的全类名，每一行是一个元素
         ArrayList<String> names = new ArrayList<>();
         try {
             in = u.openStream();
@@ -315,6 +311,7 @@ public final class ServiceLoader<S>
                 fail(service, "Error closing configuration file", y);
             }
         }
+        // 返回的是ArrayList的迭代器实例
         return names.iterator();
     }
 
@@ -326,8 +323,11 @@ public final class ServiceLoader<S>
 
         Class<S> service;
         ClassLoader loader;
+        // 加载的资源的URL集合
         Enumeration<URL> configs = null;
+        // 所有需要加载的实现类的全限定类名的集合
         Iterator<String> pending = null;
+        // 下一个需要加载的实现类的全限定类名
         String nextName = null;
 
         private LazyIterator(Class<S> service, ClassLoader loader) {
@@ -336,26 +336,33 @@ public final class ServiceLoader<S>
         }
 
         private boolean hasNextService() {
+            // 如果下一个需要加载的实现类的全限定类名不为null，则说明资源中存在内容
             if (nextName != null) {
                 return true;
             }
+            // 如果加载的资源的URL集合为null则尝试进行加载
             if (configs == null) {
                 try {
+                    // 资源的名称，META-INF/services + '需要加载的类的全限定类名'
                     String fullName = PREFIX + service.getName();
+                    // 这里其实ClassLoader实例应该不会为null
                     if (loader == null)
                         configs = ClassLoader.getSystemResources(fullName);
+                    // 从ClassPath加载资源
                     else
                         configs = loader.getResources(fullName);
                 } catch (IOException x) {
                     fail(service, "Error locating configuration files", x);
                 }
             }
+            // 从资源中解析出需要加载的所有实现类的全限定类名
             while ((pending == null) || !pending.hasNext()) {
                 if (!configs.hasMoreElements()) {
                     return false;
                 }
                 pending = parse(service, configs.nextElement());
             }
+            // //获取下一个需要加载的实现类的全限定类名
             nextName = pending.next();
             return true;
         }
@@ -367,17 +374,21 @@ public final class ServiceLoader<S>
             nextName = null;
             Class<?> c = null;
             try {
+                // 反射构造Class<S>实例
                 c = Class.forName(cn, false, loader);
             } catch (ClassNotFoundException x) {
                 fail(service,
                      "Provider " + cn + " not found");
             }
+            // 这里会做一次类型判断，也就是实现类必须是当前加载的类或者接口的派生类，否则抛出异常终止
             if (!service.isAssignableFrom(c)) {
                 fail(service,
                      "Provider " + cn  + " not a subtype");
             }
             try {
+                // 通过Class#newInstance()进行实例化，并且强制转化为对应的类型的实例
                 S p = service.cast(c.newInstance());
+                // 添加缓存，Key为实现类的全限定类名，Value为实现类的实例
                 providers.put(cn, p);
                 return p;
             } catch (Throwable x) {
@@ -463,23 +474,28 @@ public final class ServiceLoader<S>
      *          service
      */
     public Iterator<S> iterator() {
+        // Iterator的匿名实现
         return new Iterator<S>() {
 
             Iterator<Map.Entry<String,S>> knownProviders
                 = providers.entrySet().iterator();
 
+            // 先从缓存中判断是否有下一个实例，否则通过懒加载迭代器去判断是否存在下一个实例
             public boolean hasNext() {
                 if (knownProviders.hasNext())
                     return true;
                 return lookupIterator.hasNext();
             }
 
+            // 如果缓存中判断是否有下一个实例，如果有则从缓存中的值直接返回
+            // 否则通过懒加载迭代器LazyIterator获取下一个实例
             public S next() {
                 if (knownProviders.hasNext())
                     return knownProviders.next().getValue();
                 return lookupIterator.next();
             }
 
+            // 不支持移除操作，直接抛异常
             public void remove() {
                 throw new UnsupportedOperationException();
             }
