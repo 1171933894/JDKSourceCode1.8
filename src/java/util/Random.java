@@ -38,14 +38,14 @@ import sun.misc.Unsafe;
 
 /**
  * An instance of this class is used to generate a stream of
- * pseudorandom numbers. The class uses a 48-bit seed, which is
+ * pseudorandom（伪随机） numbers. The class uses a 48-bit seed, which is
  * modified using a linear congruential formula. (See Donald Knuth,
  * <i>The Art of Computer Programming, Volume 2</i>, Section 3.2.1.)
  * <p>
  * If two instances of {@code Random} are created with the same
  * seed, and the same sequence of method calls is made for each, they
- * will generate and return identical sequences of numbers. In order to
- * guarantee this property, particular algorithms are specified for the
+ * will generate and return identical（相同） sequences of numbers. In order to
+ * guarantee（保证） this property, particular（特定） algorithms are specified for the
  * class {@code Random}. Java implementations must use all the algorithms
  * shown here for the class {@code Random}, for the sake of absolute
  * portability of Java code. However, subclasses of class {@code Random}
@@ -58,7 +58,7 @@ import sun.misc.Unsafe;
  * <p>
  * Many applications will find the method {@link Math#random} simpler to use.
  *
- * <p>Instances of {@code java.util.Random} are threadsafe.
+ * <p>Instances of {@code java.util.Random} are threadsafe（线程安全的）.
  * However, the concurrent use of the same {@code java.util.Random}
  * instance across threads may encounter contention and consequent
  * poor performance. Consider instead using
@@ -132,6 +132,17 @@ class Random implements java.io.Serializable {
      * @param seed the initial seed
      * @see   #setSeed(long)
      */
+    /**
+     * 如果种子值相同，那么它生成出来的随机数也必定相等，也就是“确定的输入产生确定的输出”</>
+     * eg:<br/>
+     *     public static void main(String[] args) {
+     *         for (int i = 0; i < 10; i++) {
+     *             Random random = new Random(15);
+     *             System.out.println(random.nextInt(100));
+     *         }
+     *     }
+     * output: all 41
+     */
     public Random(long seed) {
         if (getClass() == Random.class)
             this.seed = new AtomicLong(initialScramble(seed));
@@ -196,11 +207,14 @@ class Random implements java.io.Serializable {
      * @since  1.1
      */
     protected int next(int bits) {
-        long oldseed, nextseed;
+        long oldseed, nextseed;// 定义旧种子，下一个种子
         AtomicLong seed = this.seed;
+        // 大量的线程都在进行while循环，这是相当占用CPU的
         do {
-            oldseed = seed.get();
+            oldseed = seed.get();// 获得旧的种子值，赋值给oldseed
             nextseed = (oldseed * multiplier + addend) & mask;
+        //CAS，如果seed的值还是为oldseed，就用nextseed替换掉，并且返回true，退出while循环，
+        // 如果已经不为oldseed了，就返回false，继续循环
         } while (!seed.compareAndSet(oldseed, nextseed));
         return (int)(nextseed >>> (48 - bits));
     }
@@ -387,8 +401,10 @@ class Random implements java.io.Serializable {
         if (bound <= 0)
             throw new IllegalArgumentException(BadBound);
 
+        //1.根据老的种子生成新的种子
         int r = next(31);
         int m = bound - 1;
+        //2.根据新的种子计算随机数
         if ((bound & m) == 0)  // i.e., bound is a power of 2
             r = (int)((bound * (long)r) >> 31);
         else {

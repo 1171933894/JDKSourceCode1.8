@@ -236,6 +236,8 @@ public class ThreadLocalRandom extends Random {
     }
 
     final long nextSeed() {
+        // 首先使用UNSAFE.getLong(t, SEED) 来获得当前线程的SEED，
+        // 随后+上GAMMA来作为新的种子值，随后将新的种子值放到当前线程中。
         Thread t; long r; // read and update per-thread seed
         UNSAFE.putLong(t = Thread.currentThread(), SEED,
                        r = UNSAFE.getLong(t, SEED) + GAMMA);
@@ -346,6 +348,7 @@ public class ThreadLocalRandom extends Random {
      *         (inclusive) and the bound (exclusive)
      * @throws IllegalArgumentException if {@code bound} is not positive
      */
+    // 和Random原理一样
     public int nextInt(int bound) {
         if (bound <= 0)
             throw new IllegalArgumentException(BadBound);
