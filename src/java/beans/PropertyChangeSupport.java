@@ -33,8 +33,8 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 /**
- * This is a utility class that can be used by beans that support bound
- * properties.  It manages a list of listeners and dispatches
+ * This is a utility（实用程序） class that can be used by beans that support bound
+ * properties.  It manages a list of listeners and dispatches分派（）
  * {@link PropertyChangeEvent}s to them.  You can use an instance of this class
  * as a member field of your bean and delegate these types of work to it.
  * The {@link PropertyChangeListener} can be registered for all properties
@@ -416,7 +416,7 @@ public class PropertyChangeSupport implements Serializable {
     }
 
     /**
-     * @serialData Null terminated list of <code>PropertyChangeListeners</code>.
+     * @serialData Null terminated（terminated） list of <code>PropertyChangeListeners</code>.
      * <p>
      * At serialization time we skip non-serializable listeners and
      * only serialize the serializable listeners.

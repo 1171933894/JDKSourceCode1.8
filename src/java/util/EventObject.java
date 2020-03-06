@@ -27,7 +27,7 @@ package java.util;
 
 /**
  * <p>
- * The root class from which all event state objects shall be derived.
+ * The root class from which all event state objects shall be derived（派生的）.
  * <p>
  * All Events are constructed with a reference to the object, the "source",
  * that is logically deemed to be the object upon which the Event in question
@@ -46,7 +46,7 @@ public class EventObject implements java.io.Serializable {
     protected transient Object  source;
 
     /**
-     * Constructs a prototypical Event.
+     * Constructs a prototypical（典型的） Event.
      *
      * @param    source    The object on which the Event initially occurred.
      * @exception  IllegalArgumentException  if source is null.
