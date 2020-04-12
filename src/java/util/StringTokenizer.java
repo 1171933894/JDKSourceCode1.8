@@ -99,8 +99,8 @@ import java.lang.*;
  * @see     java.io.StreamTokenizer
  * @since   JDK1.0
  */
-public
-class StringTokenizer implements Enumeration<Object> {
+// StringTokenizer是一个用来分隔String的应用类
+public class StringTokenizer implements Enumeration<Object> {
     private int currentPosition;
     private int newPosition;
     private int maxPosition;
@@ -191,6 +191,7 @@ class StringTokenizer implements Enumeration<Object> {
      *                         as tokens.
      * @exception NullPointerException if str is <CODE>null</CODE>
      */
+    // 构造一个用来解析str的StringTokenizer对象，并提供一个指定的分隔符，同时，指定是否返回分隔符
     public StringTokenizer(String str, String delim, boolean returnDelims) {
         currentPosition = 0;
         newPosition = -1;
@@ -217,6 +218,7 @@ class StringTokenizer implements Enumeration<Object> {
      * @param   delim   the delimiters.
      * @exception NullPointerException if str is <CODE>null</CODE>
      */
+    // 构造一个用来解析str的StringTokenizer对象，并提供一个指定的分隔符
     public StringTokenizer(String str, String delim) {
         this(str, delim, false);
     }
@@ -232,6 +234,7 @@ class StringTokenizer implements Enumeration<Object> {
      * @param   str   a string to be parsed.
      * @exception NullPointerException if str is <CODE>null</CODE>
      */
+    // 构造一个用来解析str的StringTokenizer对象。java默认的分隔符是“空格”、“制表符(‘\t’)”、“换行符(‘\n’)”、“回车符(‘\r’)”
     public StringTokenizer(String str) {
         this(str, " \t\n\r\f", false);
     }
@@ -331,6 +334,7 @@ class StringTokenizer implements Enumeration<Object> {
      * @exception  NoSuchElementException  if there are no more tokens in this
      *               tokenizer's string.
      */
+    // 返回从当前位置到下一个分隔符的字符串
     public String nextToken() {
         /*
          * If next position already computed in hasMoreElements() and
@@ -367,6 +371,7 @@ class StringTokenizer implements Enumeration<Object> {
      *               tokenizer's string.
      * @exception NullPointerException if delim is <CODE>null</CODE>
      */
+    // 以指定的分隔符返回结果
     public String nextToken(String delim) {
         delimiters = delim;
 
@@ -387,6 +392,7 @@ class StringTokenizer implements Enumeration<Object> {
      * @see     java.util.Enumeration
      * @see     java.util.StringTokenizer#hasMoreTokens()
      */
+    // 返回是否还有分隔符
     public boolean hasMoreElements() {
         return hasMoreTokens();
     }
@@ -403,6 +409,7 @@ class StringTokenizer implements Enumeration<Object> {
      * @see        java.util.Enumeration
      * @see        java.util.StringTokenizer#nextToken()
      */
+    // 除非生命返回的是Object而不是String
     public Object nextElement() {
         return nextToken();
     }
@@ -416,6 +423,9 @@ class StringTokenizer implements Enumeration<Object> {
      *          delimiter set.
      * @see     java.util.StringTokenizer#nextToken()
      */
+    // 返回nextToken方法被调用的次数。如果采用构造函数1和2，返回的就是分隔符数量
+    // 构造函数1：StringTokenizer(String str)
+    // 构造函数2：StringTokenizer(String str, String delim)
     public int countTokens() {
         int count = 0;
         int currpos = currentPosition;
