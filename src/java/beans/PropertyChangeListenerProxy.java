@@ -36,7 +36,7 @@ import java.util.EventListenerProxy;
  * which supports firing property change events.
  * <p>
  * If the object has a {@code getPropertyChangeListeners} method
- * then the array returned could be a mixture of {@code PropertyChangeListener}
+ * then the array returned could be a mixture（混合物） of {@code PropertyChangeListener}
  * and {@code PropertyChangeListenerProxy} objects.
  *
  * @see java.util.EventListenerProxy

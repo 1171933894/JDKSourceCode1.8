@@ -534,11 +534,13 @@ public class DriverManager {
         if(driver != null) {
             Class<?> aClass = null;
             try {
+                // 传入的classLoader为调用getConnetction的当前类加载器，从中寻找driver的class对象
                 aClass =  Class.forName(driver.getClass().getName(), true, classLoader);
             } catch (Exception ex) {
                 result = false;
             }
-
+            // 注意，只有同一个类加载器中的Class使用==比较时才会相等，此处就是校验用户注册Driver时该Driver所属的类加载器与调用时的是否同一个
+            // driver.getClass()拿到就是当初执行Class.forName("com.mysql.jdbc.Driver")时的应用AppClassLoader
              result = ( aClass == driver.getClass() ) ? true : false;
         }
 
@@ -548,6 +550,7 @@ public class DriverManager {
     private static void loadInitialDrivers() {
         String drivers;
         try {
+            // 先读取系统属性
             drivers = AccessController.doPrivileged(new PrivilegedAction<String>() {
                 public String run() {
                     return System.getProperty("jdbc.drivers");
@@ -561,6 +564,7 @@ public class DriverManager {
         // exposed as a java.sql.Driver.class service.
         // ServiceLoader.load() replaces the sun.misc.Providers()
 
+        // 通过SPI加载驱动类
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             public Void run() {
 
@@ -581,6 +585,7 @@ public class DriverManager {
                  */
                 try{
                     while(driversIterator.hasNext()) {
+                        // 最终就是调用Class.forName(DriverName, false, loader)方法
                         driversIterator.next();
                     }
                 } catch(Throwable t) {
@@ -592,6 +597,7 @@ public class DriverManager {
 
         println("DriverManager.initialize: jdbc.drivers = " + drivers);
 
+        // 继续加载系统属性中的驱动类
         if (drivers == null || drivers.equals("")) {
             return;
         }
@@ -600,6 +606,7 @@ public class DriverManager {
         for (String aDriver : driversList) {
             try {
                 println("DriverManager.Initialize: loading " + aDriver);
+                // 使用AppClassLoader加载
                 Class.forName(aDriver, true,
                         ClassLoader.getSystemClassLoader());
             } catch (Exception ex) {
@@ -617,6 +624,10 @@ public class DriverManager {
          * (which is invoking this class indirectly)
          * classloader, so that the JDBC driver class outside rt.jar
          * can be loaded from here.
+         */
+        /**
+         * 传入的caller由Reflection.getCallerClass()得到，该方法
+         * 可获取到调用本方法的Class类，这儿获取到的是当前应用的类加载器
          */
         ClassLoader callerCL = caller != null ? caller.getClassLoader() : null;
         synchronized(DriverManager.class) {
@@ -636,12 +647,15 @@ public class DriverManager {
         // Remember the first exception that gets raised so we can reraise it.
         SQLException reason = null;
 
+        // 遍历注册到registeredDrivers里的Driver类
         for(DriverInfo aDriver : registeredDrivers) {
             // If the caller does not have permission to load the driver then
             // skip it.
+            // 检查Driver类有效性
             if(isDriverAllowed(aDriver.driver, callerCL)) {
                 try {
                     println("    trying " + aDriver.driver.getClass().getName());
+                    // 调用com.mysql.jdbc.Driver.connect方法获取连接
                     Connection con = aDriver.driver.connect(url, info);
                     if (con != null) {
                         // Success!

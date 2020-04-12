@@ -49,6 +49,10 @@ import java.io.ObjectStreamField;
  * @see java.net.ServerSocket
  * @since 1.4
  */
+/**
+ * 此类实现 IP 套接字地址（IP 地址 + 端口号）。它还可以是一个对（主机名 + 端口号），在此情况下，将尝试解析主机名。
+ * 如果解析失败，则该地址将被视为未解析 地址，但是其在某些情形下仍然可以使用，比如通过代理连接。
+ */
 public class InetSocketAddress
     extends SocketAddress
 {

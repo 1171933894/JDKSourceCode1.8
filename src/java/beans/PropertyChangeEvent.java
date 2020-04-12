@@ -105,7 +105,7 @@ public class PropertyChangeEvent extends EventObject {
     }
 
     /**
-     * The "propagationId" field is reserved for future use.  In Beans 1.0
+     * The "propagationId" field is reserved（保留） for future use.  In Beans 1.0
      * the sole requirement is that if a listener catches a PropertyChangeEvent
      * and then fires a PropertyChangeEvent of its own, then it should
      * make sure that it propagates the propagationId field from its

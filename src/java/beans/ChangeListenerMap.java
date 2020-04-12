@@ -49,7 +49,7 @@ abstract class ChangeListenerMap<L extends EventListener> {
 
     /**
      * Creates an array of listeners.
-     * This method can be optimized by using
+     * This method can be optimized（优化） by using
      * the same instance of the empty array
      * when {@code length} is equal to {@code 0}.
      *
