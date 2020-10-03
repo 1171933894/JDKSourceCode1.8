@@ -44,6 +44,7 @@ package java.lang.reflect;
  *
  * @since 1.5
  */
+// 参数化类型，即泛型；例如：List<T>、Map<K,V>等带有参数化的对象
 public interface ParameterizedType extends Type {
     /**
      * Returns an array of {@code Type} objects representing the actual type
@@ -62,6 +63,7 @@ public interface ParameterizedType extends Type {
      *     be instantiated for any reason
      * @since 1.5
      */
+    // 获得<>中实际类型
     Type[] getActualTypeArguments();
 
     /**
@@ -72,6 +74,7 @@ public interface ParameterizedType extends Type {
      *     that declared this type
      * @since 1.5
      */
+    // 获得<>前面实际类型
     Type getRawType();
 
     /**
@@ -91,5 +94,6 @@ public interface ParameterizedType extends Type {
      *     for any reason
      * @since 1.5
      */
+    // 如果这个类型是某个类型所属，获得这个所有者类型，否则返回null
     Type getOwnerType();
 }

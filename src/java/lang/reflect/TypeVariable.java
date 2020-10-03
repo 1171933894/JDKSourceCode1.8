@@ -48,6 +48,7 @@ package java.lang.reflect;
  *
  * @since 1.5
  */
+// 类型变量，即泛型中的变量；例如：T、K、V等变量，可以表示任何类；在这需要强调的是，TypeVariable代表着泛型中的变量，而ParameterizedType则代表整个泛型
 public interface TypeVariable<D extends GenericDeclaration> extends Type, AnnotatedElement {
     /**
      * Returns an array of {@code Type} objects representing the
@@ -68,6 +69,7 @@ public interface TypeVariable<D extends GenericDeclaration> extends Type, Annota
      * @return an array of {@code Type}s representing the upper
      *     bound(s) of this type variable
     */
+    // 获得泛型的上线，无显示定义（extends），默认为Object
     Type[] getBounds();
 
     /**
@@ -78,6 +80,7 @@ public interface TypeVariable<D extends GenericDeclaration> extends Type, Annota
      *
      * @since 1.5
      */
+    // 获取声明该类型变量实体（即获得类、方法或构造器名）
     D getGenericDeclaration();
 
     /**
@@ -85,6 +88,7 @@ public interface TypeVariable<D extends GenericDeclaration> extends Type, Annota
      *
      * @return the name of this type variable, as it appears in the source code
      */
+    // 获得名称，即K、V、E之类名称
     String getName();
 
     /**
