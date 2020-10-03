@@ -54,6 +54,18 @@ import java.lang.annotation.Annotation;
  *
  * @since 1.2
  */
+
+/**
+ * AccessibleObject类是Field,Method和Constructor对象的父类，它提供了将反射对象标记
+ * 为在使用它时抑制默认java语言访问控制检查的功能。当使用Fields，Methods或Constructor来
+ * 设置或获取字段，调用方法，或创建和初始化新的类实例时，执行访问检查（对于public,默认（包）访问
+ * ，受保护和私有成员）
+ *
+ * 在反射对象中设置accessible标志允许具有足够权限的复杂应用程序（如java对象序列化
+ * 或其他持久性机制）以通常被禁止的方式操纵对象
+ *
+ * 默认情况下，反射对象不可访问
+ */
 public class AccessibleObject implements AnnotatedElement {
 
     /**
@@ -61,6 +73,7 @@ public class AccessibleObject implements AnnotatedElement {
      * has sufficient privilege to defeat Java language access
      * control checks.
      */
+    // Permission对象，用于检查客户端是否具有足够的权限来阻止java语言访问控制检查
     static final private java.security.Permission ACCESS_PERMISSION =
         new ReflectPermission("suppressAccessChecks");
 
@@ -89,6 +102,7 @@ public class AccessibleObject implements AnnotatedElement {
      * @see SecurityManager#checkPermission
      * @see java.lang.RuntimePermission
      */
+    // 使用单一安全检查来设置对象数组的可访问标志的一个方便的方法（为了效率）
     public static void setAccessible(AccessibleObject[] array, boolean flag)
         throws SecurityException {
         SecurityManager sm = System.getSecurityManager();
@@ -123,6 +137,7 @@ public class AccessibleObject implements AnnotatedElement {
      * @see SecurityManager#checkPermission
      * @see java.lang.RuntimePermission
      */
+    // 将对象的可访问标志设置为指示的布尔值
     public void setAccessible(boolean flag) throws SecurityException {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) sm.checkPermission(ACCESS_PERMISSION);
@@ -149,6 +164,7 @@ public class AccessibleObject implements AnnotatedElement {
      *
      * @return the value of the object's {@code accessible} flag
      */
+    // 获取此对象的accessible标志的值（布尔类型）
     public boolean isAccessible() {
         return override;
     }
@@ -156,6 +172,7 @@ public class AccessibleObject implements AnnotatedElement {
     /**
      * Constructor: only used by the Java Virtual Machine.
      */
+    // 构造函数，仅有java虚拟机使用
     protected AccessibleObject() {}
 
     // Indicates whether language-level access checks are overridden
@@ -164,11 +181,18 @@ public class AccessibleObject implements AnnotatedElement {
     //
     // NOTE: for security purposes, this field must not be visible
     // outside this package.
+    /**
+     * 通过这个对象，指示是否覆盖语言级别访问检查权限，初始化为false,该字段用于Field,
+     * 　　Method和Constructor
+     *
+     * 出于安全考虑，此字段不得显示出包外
+     */
     boolean override;
 
     // Reflection factory used by subclasses for creating field,
     // method, and constructor accessors. Note that this is called
     // very early in the bootstrapping process.
+    // 子类用于创建字段，方法和构造函数的反射工厂
     static final ReflectionFactory reflectionFactory =
         AccessController.doPrivileged(
             new sun.reflect.ReflectionFactory.GetReflectionFactoryAction());
