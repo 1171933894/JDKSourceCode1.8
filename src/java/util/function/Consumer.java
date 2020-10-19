@@ -46,6 +46,7 @@ public interface Consumer<T> {
      *
      * @param t the input argument
      */
+    // 接收一个输入参数T类型并没有返回值
     void accept(T t);
 
     /**
@@ -60,6 +61,7 @@ public interface Consumer<T> {
      * operation followed by the {@code after} operation
      * @throws NullPointerException if {@code after} is null
      */
+    // 添加一个其后执行的Consumer对象
     default Consumer<T> andThen(Consumer<? super T> after) {
         Objects.requireNonNull(after);
         return (T t) -> { accept(t); after.accept(t); };

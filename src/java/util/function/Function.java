@@ -37,6 +37,7 @@ import java.util.Objects;
  *
  * @since 1.8
  */
+// 接收一个T类型参数，返回一个R类型的结果
 @FunctionalInterface
 public interface Function<T, R> {
 

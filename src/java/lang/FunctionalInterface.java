@@ -62,6 +62,14 @@ import java.lang.annotation.*;
  * @jls 9.4.3 Interface Method Body
  * @since 1.8
  */
+
+/**
+ * 函数式注解@FunctionalInterface添加在一个接口上，主要是编译器检查提示作用<br/>
+ *
+ * 1、注解的作用是检测自定义functional接口是否符合要求，编译器会有错误提示；
+ * 2、一个接口符合functional的要求，不加这个注解也可以正常使用，建议都加上；
+ * 3、有且只能有一个抽象方法但可以有多个非抽象方法，简单说就是接口里面default和static的方法是可以有多个的，其他的方法只能有一个。
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
