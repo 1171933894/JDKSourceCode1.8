@@ -64,6 +64,7 @@ public interface Predicate<T> {
      * AND of this predicate and the {@code other} predicate
      * @throws NullPointerException if other is null
      */
+    //逻辑与
     default Predicate<T> and(Predicate<? super T> other) {
         Objects.requireNonNull(other);
         return (t) -> test(t) && other.test(t);
@@ -76,6 +77,7 @@ public interface Predicate<T> {
      * @return a predicate that represents the logical negation of this
      * predicate
      */
+    //获取该对象否定的Predicate，相当于逆转boolean
     default Predicate<T> negate() {
         return (t) -> !test(t);
     }
@@ -96,6 +98,7 @@ public interface Predicate<T> {
      * OR of this predicate and the {@code other} predicate
      * @throws NullPointerException if other is null
      */
+    //逻辑或
     default Predicate<T> or(Predicate<? super T> other) {
         Objects.requireNonNull(other);
         return (t) -> test(t) || other.test(t);
@@ -111,6 +114,7 @@ public interface Predicate<T> {
      * @return a predicate that tests if two arguments are equal according
      * to {@link Objects#equals(Object, Object)}
      */
+    //生成一个判断对象是否相等的Predicate
     static <T> Predicate<T> isEqual(Object targetRef) {
         return (null == targetRef)
                 ? Objects::isNull

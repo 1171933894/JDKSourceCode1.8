@@ -37,6 +37,7 @@ package java.util.function;
  *
  * @since 1.8
  */
+// 是一个只有返回没有参数的接口，只有一个方法get
 @FunctionalInterface
 public interface Supplier<T> {
 
