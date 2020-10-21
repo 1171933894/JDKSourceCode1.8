@@ -36,6 +36,7 @@ package java.util.function;
  * @see IntUnaryOperator
  * @since 1.8
  */
+// 如果参与计算的两个参数类型是原生类型int，则可以使用IntBinaryOperator提供性能。
 @FunctionalInterface
 public interface IntBinaryOperator {
 

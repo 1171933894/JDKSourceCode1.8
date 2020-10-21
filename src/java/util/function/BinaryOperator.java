@@ -42,6 +42,7 @@ import java.util.Comparator;
  * @see UnaryOperator
  * @since 1.8
  */
+// BinaryOperator可以接受两个类型为T的参数，返回一个类型为T的结果
 @FunctionalInterface
 public interface BinaryOperator<T> extends BiFunction<T,T,T> {
     /**

@@ -40,6 +40,7 @@ import java.util.Objects;
  * @see Function
  * @since 1.8
  */
+// BiFunction是一个函数式接口，它可以接受两个参数并返回一个结果
 @FunctionalInterface
 public interface BiFunction<T, U, R> {
 
