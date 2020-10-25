@@ -1235,10 +1235,13 @@ public class ArrayList<E> extends AbstractList<E>
          * 这允许forEach的内循环在没有任何进一步检查的情况下运行，并且简化了lambda分辨率。虽然这需要进行多次检查，但请注意，在list.stream（）。
          * forEach（a）的常见情况中，除forEach本身之外，不会执行任何检查或其他计算。其他较少使用的方法无法利用这些优化的大部分优势。
          */
-
+        //用于存放ArrayList对象
         private final ArrayList<E> list;
+        //起始位置（包含），advance/split操作时会修改
         private int index; // current index, modified on advance/split
+        //结束位置（不包含），-1 表示到最后一个元素
         private int fence; // -1 until used; then one past last index
+        //用于存放list的modCount
         private int expectedModCount; // initialized when fence set
 
         /**
@@ -1252,13 +1255,16 @@ public class ArrayList<E> extends AbstractList<E>
             this.expectedModCount = expectedModCount;
         }
 
+        //获取结束位置（存在意义：首次初始化时需对fence和expectedModCount进行赋值）
         private int getFence() { // initialize fence to size on first use
             int hi; // (a specialized variant appears in method forEach)
             ArrayList<E> lst;
+            //fence<0时（第一次初始化时，fence才会小于0）
             if ((hi = fence) < 0) {
+                //list 为 null时，fence=0
                 if ((lst = list) == null)
                     hi = fence = 0;
-                else {
+                else {//否则，fence = list的长度
                     expectedModCount = lst.modCount;
                     hi = fence = lst.size;
                 }
@@ -1266,21 +1272,35 @@ public class ArrayList<E> extends AbstractList<E>
             return hi;
         }
 
+        //分割list，返回一个新分割出的spliterator实例
         public ArrayListSpliterator<E> trySplit() {
+            //hi为当前的结束位置
+            //lo 为起始位置
+            //计算中间的位置
             int hi = getFence(), lo = index, mid = (lo + hi) >>> 1;
+            //当lo>=mid,表示不能在分割，返回null
+            //当lo<mid时,可分割，切割（lo，mid）出去，同时更新index=mid
             return (lo >= mid) ? null : // divide range in half unless too small
                     new ArrayListSpliterator<E>(list, lo, index = mid,
                             expectedModCount);
         }
 
+        /**
+         *  返回true 时，只表示可能还有元素未处理
+         *  返回false 时，没有剩余元素处理了
+         */
         public boolean tryAdvance(Consumer<? super E> action) {
             if (action == null)
                 throw new NullPointerException();
+            //hi为当前的结束位置,i 为起始位置
             int hi = getFence(), i = index;
+            //还有剩余元素未处理时
             if (i < hi) {
+                //处理i位置，index+1
                 index = i + 1;
                 @SuppressWarnings("unchecked") E e = (E) list.elementData[i];
                 action.accept(e);
+                //遍历时，结构发生变更，抛错
                 if (list.modCount != expectedModCount)
                     throw new ConcurrentModificationException();
                 return true;
@@ -1288,6 +1308,7 @@ public class ArrayList<E> extends AbstractList<E>
             return false;
         }
 
+        //顺序遍历处理所有剩下的元素
         public void forEachRemaining(Consumer<? super E> action) {
             int i, hi, mc; // hoist accesses and checks from loop
             ArrayList<E> lst;
@@ -1295,6 +1316,7 @@ public class ArrayList<E> extends AbstractList<E>
             if (action == null)
                 throw new NullPointerException();
             if ((lst = list) != null && (a = lst.elementData) != null) {
+                //当fence<0时，表示fence和expectedModCount未初始化，可以思考一下这里能否直接调用getFence()？
                 if ((hi = fence) < 0) {
                     mc = lst.modCount;
                     hi = lst.size;
@@ -1303,8 +1325,10 @@ public class ArrayList<E> extends AbstractList<E>
                 if ((i = index) >= 0 && (index = hi) <= a.length) {
                     for (; i < hi; ++i) {
                         @SuppressWarnings("unchecked") E e = (E) a[i];
+                        //调用action.accept处理元素
                         action.accept(e);
                     }
+                    //遍历时发生结构变更时抛出异常
                     if (lst.modCount == mc)
                         return;
                 }
@@ -1317,6 +1341,7 @@ public class ArrayList<E> extends AbstractList<E>
         }
 
         public int characteristics() {
+            //打上特征值：可以返回size
             return Spliterator.ORDERED | Spliterator.SIZED | Spliterator.SUBSIZED;
         }
     }

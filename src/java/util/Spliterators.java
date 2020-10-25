@@ -38,10 +38,11 @@ import java.util.function.LongConsumer;
  * @see Spliterator
  * @since 1.8
  */
+// 用于操作或者创建spliterator及基本特殊实例OfInt，OfLong，OfDouble的实例，的静态的类和方法。
 public final class Spliterators {
 
     // Suppresses default constructor, ensuring non-instantiability.
-    private Spliterators() {}
+    private Spliterators() {}// 覆盖默认的构造方法，保证类不能实例化
 
     // Empty spliterators
 
