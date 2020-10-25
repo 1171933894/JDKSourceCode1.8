@@ -1687,7 +1687,7 @@ public final class Spliterators {
     /**
      * A Spliterator using a given Iterator for element
      * operations. The spliterator implements {@code trySplit} to
-     * permit limited parallelism.
+     * permit（许可证）limited parallelism.
      */
     static class IteratorSpliterator<T> implements Spliterator<T> {
         static final int BATCH_UNIT = 1 << 10;  // batch array size increment
@@ -1695,7 +1695,7 @@ public final class Spliterators {
         private final Collection<? extends T> collection; // null OK
         private Iterator<? extends T> it;
         private final int characteristics;
-        private long est;             // size estimate
+        private long est;             // size estimate 预估列表大小
         private int batch;            // batch size for splits
 
         /**

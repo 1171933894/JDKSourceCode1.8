@@ -151,6 +151,7 @@ import java.util.function.UnaryOperator;
  * @see DoubleStream
  * @see <a href="package-summary.html">java.util.stream</a>
  */
+// T - 流元素的类型
 public interface Stream<T> extends BaseStream<T, Stream<T>> {
 
     /**
@@ -166,6 +167,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *                  should be included
      * @return the new stream
      */
+    //返回由与此给定谓词匹配的此流的元素组成的流
     Stream<T> filter(Predicate<? super T> predicate);
 
     /**
@@ -181,6 +183,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *               function to apply to each element
      * @return the new stream
      */
+    //返回一个流，该流包含将给定函数应用于此流的元素的结果
     <R> Stream<R> map(Function<? super T, ? extends R> mapper);
 
     /**
@@ -195,6 +198,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *               function to apply to each element
      * @return the new stream
      */
+    //返回 IntStream其中包含将给定函数应用于此流的元素的结果
     IntStream mapToInt(ToIntFunction<? super T> mapper);
 
     /**
@@ -209,6 +213,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *               function to apply to each element
      * @return the new stream
      */
+    //返回 LongStream其中包含将给定函数应用于此流的元素的结果
     LongStream mapToLong(ToLongFunction<? super T> mapper);
 
     /**
@@ -223,6 +228,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *               function to apply to each element
      * @return the new stream
      */
+    //返回 DoubleStream其中包含将给定函数应用于此流的元素的结果
     DoubleStream mapToDouble(ToDoubleFunction<? super T> mapper);
 
     /**
@@ -267,6 +273,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *               of new values
      * @return the new stream
      */
+    // 返回一个流，该流包含将此流的每个元素替换为通过将提供的映射函数应用于每个元素而生成的映射流的内容的结果
     <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper);
 
     /**
@@ -287,6 +294,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @return the new stream
      * @see #flatMap(Function)
      */
+    // 返回 IntStream其中包含将此流的每个元素替换为通过将提供的映射函数应用于每个元素而生成的映射流的内容的结果
     IntStream flatMapToInt(Function<? super T, ? extends IntStream> mapper);
 
     /**
@@ -307,6 +315,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @return the new stream
      * @see #flatMap(Function)
      */
+    //返回 LongStream其中包含将此流的每个元素替换为通过将提供的映射函数应用于每个元素而生成的映射流的内容的结果
     LongStream flatMapToLong(Function<? super T, ? extends LongStream> mapper);
 
     /**
@@ -327,6 +336,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @return the new stream
      * @see #flatMap(Function)
      */
+    //返回 DoubleStream其中包含将此流的每个元素替换为通过将提供的映射函数应用于每个元素而生成的映射流的内容的结果
     DoubleStream flatMapToDouble(Function<? super T, ? extends DoubleStream> mapper);
 
     /**
@@ -356,6 +366,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * @return the new stream
      */
+    //返回由此流的不同元素（根据 Object.equals(Object) ）组成的流
     Stream<T> distinct();
 
     /**
@@ -372,6 +383,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * @return the new stream
      */
+    //返回由此流的元素组成的流，按照自然顺序排序
     Stream<T> sorted();
 
     /**
@@ -389,6 +401,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *                   {@code Comparator} to be used to compare stream elements
      * @return the new stream
      */
+    //返回由此流的元素组成的流，根据提供的 Comparator进行排序
     Stream<T> sorted(Comparator<? super T> comparator);
 
     /**
@@ -420,6 +433,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *                 they are consumed from the stream
      * @return the new stream
      */
+    //返回由此流的元素组成的流，另外在每个元素上执行提供的操作，因为元素是从结果流中消耗的
     Stream<T> peek(Consumer<? super T> action);
 
     /**
@@ -447,6 +461,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @return the new stream
      * @throws IllegalArgumentException if {@code maxSize} is negative
      */
+    //返回由此流的元素组成的流，截断长度不超过 maxSize
     Stream<T> limit(long maxSize);
 
     /**
@@ -476,6 +491,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @return the new stream
      * @throws IllegalArgumentException if {@code n} is negative
      */
+    //在丢弃流的第一个n元素后，返回由此流的其余元素组成的流
     Stream<T> skip(long n);
 
     /**
@@ -495,6 +511,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @param action a <a href="package-summary.html#NonInterference">
      *               non-interfering</a> action to perform on the elements
      */
+    //对此流的每个元素执行操作
     void forEach(Consumer<? super T> action);
 
     /**
@@ -514,6 +531,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *               non-interfering</a> action to perform on the elements
      * @see #forEach(Consumer)
      */
+    //如果流具有已定义的遭遇顺序，则按流的遭遇顺序对此流的每个元素执行操作
     void forEachOrdered(Consumer<? super T> action);
 
     /**
@@ -524,6 +542,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * @return an array containing the elements of this stream
      */
+    //返回包含此流的元素的数组
     Object[] toArray();
 
     /**
@@ -553,6 +572,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * from the array generator is not a supertype of the runtime type of every
      * element in this stream
      */
+    //返回包含此流元素的数组，使用提供的 generator函数分配返回的数组，以及分区执行或调整大小可能需要的任何其他数组
     <A> A[] toArray(IntFunction<A[]> generator);
 
     /**
@@ -604,6 +624,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *                    function for combining two values
      * @return the result of the reduction
      */
+    //使用提供的标识值和 associative累积函数对此流的元素执行 reduction ，并返回减小的值
     T reduce(T identity, BinaryOperator<T> accumulator);
 
     /**
@@ -644,6 +665,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @see #min(Comparator)
      * @see #max(Comparator)
      */
+    //使用 associative累积函数对此流的元素执行 reduction ，并返回描述减少值的 Optional （如果有）
     Optional<T> reduce(BinaryOperator<T> accumulator);
 
     /**
@@ -693,6 +715,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @see #reduce(BinaryOperator)
      * @see #reduce(Object, BinaryOperator)
      */
+    //使用提供的标识，累积和组合功能对此流的元素执行 reduction
     <U> U reduce(U identity,
                  BiFunction<U, ? super T, U> accumulator,
                  BinaryOperator<U> combiner);
@@ -748,6 +771,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *                    compatible with the accumulator function
      * @return the result of the reduction
      */
+    //对此流的元素执行 mutable reduction操作
     <R> R collect(Supplier<R> supplier,
                   BiConsumer<R, ? super T> accumulator,
                   BiConsumer<R, R> combiner);
@@ -804,6 +828,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @see #collect(Supplier, BiConsumer, BiConsumer)
      * @see Collectors
      */
+    //使用 Collector对此流的元素执行 mutable reduction操作
     <R, A> R collect(Collector<? super T, A, R> collector);
 
     /**
@@ -820,6 +845,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * or an empty {@code Optional} if the stream is empty
      * @throws NullPointerException if the minimum element is null
      */
+    //根据提供的 Comparator返回此流的最小元素
     Optional<T> min(Comparator<? super T> comparator);
 
     /**
@@ -837,6 +863,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * or an empty {@code Optional} if the stream is empty
      * @throws NullPointerException if the maximum element is null
      */
+    //根据提供的 Comparator返回此流的最大元素
     Optional<T> max(Comparator<? super T> comparator);
 
     /**
@@ -851,6 +878,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * @return the count of elements in this stream
      */
+    //返回此流中元素的数量
     long count();
 
     /**
@@ -872,6 +900,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @return {@code true} if any elements of the stream match the provided
      * predicate, otherwise {@code false}
      */
+    //返回此流的所有元素是否与提供的谓词匹配
     boolean anyMatch(Predicate<? super T> predicate);
 
     /**
@@ -895,6 +924,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @return {@code true} if either all elements of the stream match the
      * provided predicate or the stream is empty, otherwise {@code false}
      */
+    //返回此流的任何元素是否与提供的谓词匹配
     boolean allMatch(Predicate<? super T> predicate);
 
     /**
@@ -918,6 +948,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @return {@code true} if either no elements of the stream match the
      * provided predicate or the stream is empty, otherwise {@code false}
      */
+    //返回此流的元素是否与提供的谓词匹配
     boolean noneMatch(Predicate<? super T> predicate);
 
     /**
@@ -952,6 +983,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @throws NullPointerException if the element selected is null
      * @see #findFirst()
      */
+    //返回Optional描述流的一些元件，或一个空Optional如果流是空的
     Optional<T> findAny();
 
     // Static factories
@@ -1071,6 +1103,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @param b the second stream
      * @return the concatenation of the two input streams
      */
+    //创建一个延迟连接的流，其元素是第一个流的所有元素，后跟第二个流的所有元素
     public static <T> Stream<T> concat(Stream<? extends T> a, Stream<? extends T> b) {
         Objects.requireNonNull(a);
         Objects.requireNonNull(b);

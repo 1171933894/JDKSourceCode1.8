@@ -37,7 +37,7 @@ import java.util.function.Predicate;
 /**
  * Base interface for streams, which are sequences of elements supporting
  * sequential and parallel aggregate operations.  The following example
- * illustrates an aggregate operation using the stream types {@link Stream}
+ * illustrates（说明了）an aggregate operation using the stream types {@link Stream}
  * and {@link IntStream}, computing the sum of the weights of the red widgets:
  *
  * <pre>{@code
@@ -60,6 +60,11 @@ import java.util.function.Predicate;
  * @see LongStream
  * @see DoubleStream
  * @see <a href="package-summary.html">java.util.stream</a>
+ */
+
+/**
+ * T -流元素的类型
+ * S -实现的流的类型 BaseStream
  */
 public interface BaseStream<T, S extends BaseStream<T, S>>
         extends AutoCloseable {
@@ -84,7 +89,7 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
     Spliterator<T> spliterator();
 
     /**
-     * Returns whether this stream, if a terminal operation were to be executed,
+     * Returns whether this stream, if a terminal（终端）operation were to be executed,
      * would execute in parallel.  Calling this method after invoking an
      * terminal stream operation method may yield unpredictable results.
      *
@@ -93,7 +98,7 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
     boolean isParallel();
 
     /**
-     * Returns an equivalent stream that is sequential.  May return
+     * Returns an equivalent（等效）stream that is sequential（顺序）.  May return
      * itself, either because the stream was already sequential, or because
      * the underlying stream state was modified to be sequential.
      *
@@ -102,6 +107,7 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
      *
      * @return a sequential stream
      */
+    // 返回顺序的等效流
     S sequential();
 
     /**
@@ -114,6 +120,7 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
      *
      * @return a parallel stream
      */
+    // 返回并行的等效流
     S parallel();
 
     /**
@@ -127,6 +134,7 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
      *
      * @return an unordered stream
      */
+    // 返回无序的等效流
     S unordered();
 
     /**
@@ -147,6 +155,7 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
      * @param closeHandler A task to execute when the stream is closed
      * @return a stream with a handler that is run if the stream is closed
      */
+    // 返回带有附加关闭处理程序的等效流
     S onClose(Runnable closeHandler);
 
     /**
@@ -155,6 +164,7 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
      *
      * @see AutoCloseable#close()
      */
+    // 关闭此流，导致调用此流管道的所有关闭处理程序
     @Override
     void close();
 }

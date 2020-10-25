@@ -37,6 +37,7 @@ import java.util.function.Supplier;
  *
  * @since 1.8
  */
+// 用于创建和操作流的低级实用程序方法
 public final class StreamSupport {
 
     // Suppresses default constructor, ensuring non-instantiability.
