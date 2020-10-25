@@ -577,6 +577,7 @@ public interface Collection<E> extends Iterable<E> {
      * @return a sequential {@code Stream} over the elements in this collection
      * @since 1.8
      */
+    // 返回一个顺序流，集合中的元素就是数据源
     default Stream<E> stream() {
         // 第一个参数是获取一个 Spliterator的实例，它表示从数据源中获取元素的方式。相当于升级版的Iterator。
         // 第二个参数是是否并行
@@ -600,6 +601,7 @@ public interface Collection<E> extends Iterable<E> {
      * collection
      * @since 1.8
      */
+    // 返回一个并行流，集合中的元素就是数据源
     default Stream<E> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }

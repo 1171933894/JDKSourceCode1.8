@@ -1212,6 +1212,7 @@ public class ArrayList<E> extends AbstractList<E>
      * @return a {@code Spliterator} over the elements in this list
      * @since 1.8
      */
+    // 创建一个延时绑定和快速失败的分割迭代器
     @Override
     public Spliterator<E> spliterator() {
         return new ArrayListSpliterator<>(this, 0, -1, 0);
@@ -1220,6 +1221,7 @@ public class ArrayList<E> extends AbstractList<E>
     /**
      * Index-based split-by-two, lazily initialized Spliterator
      */
+    // 基于索引实现二分、延迟初始化的 Spliterator
     static final class ArrayListSpliterator<E> implements Spliterator<E> {
 
         /**
@@ -1241,7 +1243,7 @@ public class ArrayList<E> extends AbstractList<E>
         private int index; // current index, modified on advance/split
         //结束位置（不包含），-1 表示到最后一个元素
         private int fence; // -1 until used; then one past last index
-        //用于存放list的modCount
+        //用于存放list的modCount（快速失败计数器）
         private int expectedModCount; // initialized when fence set
 
         /**

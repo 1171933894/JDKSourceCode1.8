@@ -179,10 +179,18 @@ abstract class ReferencePipeline<P_IN, P_OUT>
         };
     }
 
+    /**
+     *  基于 mapper 创建一个无状态的流管道，并将其链接到此流管道之后
+     */
     @Override
     @SuppressWarnings("unchecked")
     public final <R> Stream<R> map(Function<? super P_OUT, ? extends R> mapper) {
         Objects.requireNonNull(mapper);
+        /**
+         * 新流管道的操作为 mapper
+         * 新流管道的操作标识为 NOT_SORTED、NOT_DISTINCT
+         * 下一阶段的操作为 sink【反向链接】
+         */
         return new StatelessOp<P_OUT, R>(this, StreamShape.REFERENCE,
                                      StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
@@ -190,6 +198,10 @@ abstract class ReferencePipeline<P_IN, P_OUT>
                 return new Sink.ChainedReference<P_OUT, R>(sink) {
                     @Override
                     public void accept(P_OUT u) {
+                        /**
+                         * 接收上游阶段发送的数据 u，并进行当前阶段的处理，
+                         * 并将结果发送给下游阶段处理
+                         */
                         downstream.accept(mapper.apply(u));
                     }
                 };
@@ -552,12 +564,13 @@ abstract class ReferencePipeline<P_IN, P_OUT>
         }
 
         /**
-         * Constructor for the source stage of a Stream.
+         * Constructor for the source stage（阶段）of a Stream.
          *
          * @param source {@code Spliterator} describing the stream source
          * @param sourceFlags the source flags for the stream source, described
          *                    in {@link StreamOpFlag}
          */
+        // 创建流水线的管道头
         Head(Spliterator<?> source,
              int sourceFlags, boolean parallel) {
             super(source, sourceFlags, parallel);
@@ -603,6 +616,7 @@ abstract class ReferencePipeline<P_IN, P_OUT>
      * @param <E_OUT> type of elements in produced by this stage
      * @since 1.8
      */
+    // 一个无状态的流管道
     abstract static class StatelessOp<E_IN, E_OUT>
             extends ReferencePipeline<E_IN, E_OUT> {
         /**
@@ -613,6 +627,9 @@ abstract class ReferencePipeline<P_IN, P_OUT>
          * @param inputShape The stream shape for the upstream pipeline stage
          * @param opFlags Operation flags for the new stage
          */
+        /**
+         * 将此流管道追加到上游管道  upstream 之后
+         */
         StatelessOp(AbstractPipeline<?, E_IN, ?> upstream,
                     StreamShape inputShape,
                     int opFlags) {
@@ -620,6 +637,9 @@ abstract class ReferencePipeline<P_IN, P_OUT>
             assert upstream.getOutputShape() == inputShape;
         }
 
+        /**
+         *  此管道的操作是无状态的
+         */
         @Override
         final boolean opIsStateful() {
             return false;

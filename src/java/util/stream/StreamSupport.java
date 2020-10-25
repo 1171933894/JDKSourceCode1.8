@@ -65,6 +65,7 @@ public final class StreamSupport {
      *        stream.
      * @return a new sequential or parallel {@code Stream}
      */
+    // 基于一个 Spliterator【分割迭代器】创建一个顺序或并行的流
     public static <T> Stream<T> stream(Spliterator<T> spliterator, boolean parallel) {
         Objects.requireNonNull(spliterator);
         return new ReferencePipeline.Head<>(spliterator,

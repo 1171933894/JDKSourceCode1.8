@@ -78,12 +78,14 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * Backlink to the head of the pipeline chain (self if this is the source
      * stage).
      */
+    // 流水线的源阶段【即第一个流管道】
     @SuppressWarnings("rawtypes")
     private final AbstractPipeline sourceStage;
 
     /**
      * The "upstream" pipeline, or null if this is the source stage.
      */
+    // 当前流管道的上一阶段，如果是源流，则为 null
     @SuppressWarnings("rawtypes")
     private final AbstractPipeline previousStage;
 
@@ -91,12 +93,14 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * The operation flags for the intermediate operation represented by this
      * pipeline object.
      */
+    // 此阶段操作的操作标识
     protected final int sourceOrOpFlags;
 
     /**
      * The next stage in the pipeline, or null if this is the last stage.
      * Effectively final at the point of linking to the next pipeline.
      */
+    // 此流管道的下一阶段
     @SuppressWarnings("rawtypes")
     private AbstractPipeline nextStage;
 
@@ -105,6 +109,10 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * and the stream source if sequential, or the previous stateful if parallel.
      * Valid at the point of pipeline preparation for evaluation.
      */
+    /**
+     *  顺序流：当前阶段和源流之间存在的中间阶段的个数
+     *  并行流：上一阶段的状态
+     */
     private int depth;
 
     /**
@@ -112,6 +120,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * up to and including the operation represented by this pipeline object.
      * Valid at the point of pipeline preparation for evaluation.
      */
+    // 组合了源流和所有中间阶段的流标识和操作标识
     private int combinedFlags;
 
     /**
@@ -120,6 +129,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * must be null. After the pipeline is consumed if non-null then is set to
      * null.
      */
+    // 源流的分割迭代器，用于产生元素
     private Spliterator<?> sourceSpliterator;
 
     /**
@@ -127,25 +137,30 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * pipeline is consumed if non-null then {@code sourceSpliterator} must be
      * null. After the pipeline is consumed if non-null then is set to null.
      */
+    // 源流的分割迭代器生成器，如果 sourceSpliterator == null
     private Supplier<? extends Spliterator<?>> sourceSupplier;
 
     /**
      * True if this pipeline has been linked or consumed
      */
+    // 此流管道已经被链接或消费
     private boolean linkedOrConsumed;
 
     /**
      * True if there are any stateful ops in the pipeline; only valid for the
      * source stage.
      */
+    // 流水线中存在有状态的流管道
     private boolean sourceAnyStateful;
 
+    // 此流管道关闭时的后置操作
     private Runnable sourceCloseAction;
 
     /**
      * True if pipeline is parallel, otherwise the pipeline is sequential; only
      * valid for the source stage.
      */
+    // 此流管道是否是并行的
     private boolean parallel;
 
     /**
@@ -165,7 +180,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
         // The following is an optimization of:
         // StreamOpFlag.combineOpFlags(sourceOrOpFlags, StreamOpFlag.INITIAL_OPS_VALUE);
         this.combinedFlags = (~(sourceOrOpFlags << 1)) & StreamOpFlag.INITIAL_OPS_VALUE;
-        this.depth = 0;
+        this.depth = 0;// 源阶段的 depth=0
         this.parallel = parallel;
     }
 
