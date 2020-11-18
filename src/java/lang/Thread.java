@@ -395,6 +395,7 @@ class Thread implements Runnable {
                 acc != null ? acc : AccessController.getContext();
         this.target = target;
         setPriority(priority);
+        // parent就是父线程，也就是执行new Thread()的线程，这里会把父线程的inheritableThreadLocals赋值给子线程，从而实现了父子线程变量传递
         if (inheritThreadLocals && parent.inheritableThreadLocals != null)
             this.inheritableThreadLocals =
                 ThreadLocal.createInheritedMap(parent.inheritableThreadLocals);

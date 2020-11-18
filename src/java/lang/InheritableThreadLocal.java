@@ -45,6 +45,27 @@ import java.lang.ref.*;
  * @since   1.2
  */
 
+/**
+ * private InheritableThreadLocal<Integer> inheritableThreadLocalData = new InheritableThreadLocal<>();
+ *
+ * private ThreadLocal<Integer> threadLocalData = new ThreadLocal<>();
+ *
+ * @Test
+ * public void testInheritableThreadLocal() throws InterruptedException, ExecutionException {
+ *     inheritableThreadLocalData.set(1);
+ *     threadLocalData.set(1);
+ *     System.out.println("current thread get InheritableThreadLocal data:" + inheritableThreadLocalData.get() +
+ *             " get ThreadLocal data:" + threadLocalData.get());
+ *     new Thread(() -> System.out.println("son thread get InheritableThreadLocal data:" + inheritableThreadLocalData.get() +
+ *             " get ThreadLocal data:" + threadLocalData.get())).start();
+ * }
+ *
+ * 输出：
+ * current thread get InheritableThreadLocal data:1 get ThreadLocal data:1
+ * son thread get InheritableThreadLocal data:1 get ThreadLocal data:null
+ * 可以看到当前内是可以访问到ThreadLocal和InheritableThreadLocal的数据的
+ * 子线程只能访问InheritableThreadLocal的数据，不能访问ThreadLocal的数据
+ */
 public class InheritableThreadLocal<T> extends ThreadLocal<T> {
     /**
      * Computes the child's initial value for this inheritable thread-local
